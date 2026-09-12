@@ -1,0 +1,7 @@
+<CommunityApplications>
+  <Profile>
+    Unraid plugin that adds a dashboard tile embedding an <iframe>, with the URL (and tile height) editable from Settings > Utilities > Iframe Dashboard, or via the gear icon on the tile itself.
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/HuffAndStuff/unraid-iframe-dashboard/refs/heads/main/terminal.svg</Icon>
+  <WebPage>https://github.com/HuffAndStuff/unraid-iframe-dashboard</WebPage>
+</CommunityApplications>
