@@ -1,0 +1,148 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name       "iframe-dashboard">
+<!ENTITY author     "HuffAndStuff">
+<!ENTITY version    "2026.09.11a">
+<!ENTITY launch     "Settings/IframeDashboardSettings">
+<!ENTITY pluginURL  "https://raw.githubusercontent.com/huffandstuff/UnraidiFrame/main/iframe-dashboard.plg">
+<!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
+<!ENTITY flash      "/boot/config/plugins/&name;">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" launch="&launch;" min="6.9.0">
+
+<CHANGES>
+###2026.09.11
+- Initial release: adds a dashboard tile with an iframe
+</CHANGES>
+
+<!-- Dashboard tile -->
+<FILE Name="&emhttp;/iframe-dashboard.page">
+<INLINE>
+<![CDATA[
+Menu="Dashboard:1"
+Title="Iframe"
+Icon="globe"
+---
+<?PHP
+/*
+ * Dashboard tile: embeds an iframe whose URL/height come from
+ * /boot/config/plugins/iframe-dashboard/iframe-dashboard.cfg,
+ * edited via Settings > Utilities > Iframe Dashboard.
+ */
+$iframe_cfg = @parse_ini_file('/boot/config/plugins/iframe-dashboard/iframe-dashboard.cfg') ?: [];
+$iframe_url    = $iframe_cfg['URL'] ?? 'https://example.com';
+$iframe_height = (int)($iframe_cfg['HEIGHT'] ?? 320);
+$iframe_title  = $iframe_cfg['TITLE'] ?? 'Iframe';
+if ($iframe_height < 100) $iframe_height = 100;
+
+$iframe_url_attr   = htmlspecialchars($iframe_url, ENT_QUOTES);
+$iframe_title_attr = htmlspecialchars($iframe_title, ENT_QUOTES);
+
+$mytiles['iframe_dashboard']['column1'] = <<<EOT
+<tbody title="{$iframe_title_attr}">
+<tr>
+  <td>
+    <span class="tile-header">
+      <span class="tile-header-left">
+        <div class="section">{$iframe_title_attr}</div>
+      </span>
+      <span class="tile-header-right">
+        <span class="tile-header-right-controls">
+          <a href="/Settings/IframeDashboardSettings" title="_(Iframe dashboard settings)_" aria-label="_(Iframe dashboard settings)_">
+            <i class="fa fa-fw fa-cog control" aria-hidden="true"></i>
+          </a>
+        </span>
+      </span>
+    </span>
+  </td>
+</tr>
+<tr>
+  <td>
+    <iframe src="{$iframe_url_attr}" style="width:100%;height:{$iframe_height}px;border:0;border-radius:4px;" loading="lazy" title="{$iframe_title_attr}"></iframe>
+  </td>
+</tr>
+</tbody>
+EOT;
+?>
+]]>
+</INLINE>
+</FILE>
+
+<!-- Settings page: Settings > Utilities > Iframe Dashboard -->
+<FILE Name="&emhttp;/IframeDashboardSettings.page">
+<INLINE>
+<![CDATA[
+Menu="Utilities"
+Title="Iframe Dashboard"
+Icon="globe"
+---
+<?PHP
+$var = parse_ini_file('state/var.ini');
+$iframe_cfg = @parse_ini_file('/boot/config/plugins/iframe-dashboard/iframe-dashboard.cfg') ?: [];
+$iframe_url    = htmlspecialchars($iframe_cfg['URL'] ?? 'https://example.com', ENT_QUOTES);
+$iframe_height = htmlspecialchars((string)($iframe_cfg['HEIGHT'] ?? 320), ENT_QUOTES);
+$iframe_title  = htmlspecialchars($iframe_cfg['TITLE'] ?? 'Iframe', ENT_QUOTES);
+?>
+<form markdown="1" id="iframeDashboardSettingsForm" method="POST" action="/update.php" target="progressFrame">
+<input type="hidden" name="#file" value="iframe-dashboard/iframe-dashboard.cfg">
+<input type="hidden" name="csrf_token" value="<?=$var['csrf_token']?>">
+
+<div class="title"><span class="left"><i class="fa fa-globe"></i>_(Dashboard iframe)_</span></div>
+
+_(URL)_:
+: <input type="url" name="URL" value="<?=$iframe_url?>" size="60" placeholder="https://example.com">
+
+:iframe_url_plug:
+> The web page shown in the dashboard tile. Many sites block being embedded
+> in an iframe (via the X-Frame-Options or Content-Security-Policy headers);
+> the tile will show blank for those, and there's no workaround from here.
+:end
+
+_(Tile title)_:
+: <input type="text" name="TITLE" value="<?=$iframe_title?>" size="40" maxlength="100" placeholder="Iframe">
+
+_(Tile height)_:
+: <input type="number" name="HEIGHT" value="<?=$iframe_height?>" min="100" max="1000" step="10">
+
+:iframe_height_plug:
+> Height of the embedded frame, in pixels.
+:end
+
+&nbsp;
+: <span class="inline-block">
+  <input type="submit" name="#apply" value="_(Apply)_">
+  <input type="button" value="_(Done)_" onclick="done()">
+  </span>
+</form>
+]]>
+</INLINE>
+</FILE>
+
+<FILE Run="/bin/bash">
+<INLINE>
+mkdir -p &flash;
+if [ ! -f &flash;/iframe-dashboard.cfg ]; then
+  printf 'URL="https://example.com"\nHEIGHT="320"\nTITLE="Iframe"\n' > &flash;/iframe-dashboard.cfg
+fi
+
+echo ""
+echo "-----------------------------------------------"
+echo " iframe-dashboard installed."
+echo " Configure it under Settings - Utilities -"
+echo " Iframe Dashboard, or the gear icon on the tile."
+echo "-----------------------------------------------"
+</INLINE>
+</FILE>
+
+<!-- Uninstall (also plain text, not CDATA, so &emhttp;/&flash; expand) -->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+rm -rf &emhttp;
+rm -rf &flash;
+echo "iframe-dashboard removed"
+</INLINE>
+</FILE>
+
+</PLUGIN>
