@@ -5,7 +5,7 @@
 <!ENTITY author     "HuffAndStuff">
 <!ENTITY version    "2026.09.11a">
 <!ENTITY launch     "Settings/IframeDashboardSettings">
-<!ENTITY pluginURL  "https://raw.githubusercontent.com/huffandstuff/UnraidiFrame/main/iframe-dashboard.plg">
+<!ENTITY pluginURL  "https://raw.githubusercontent.com/HuffAndStuff/unraid-iframe-dashboard/refs/heads/main/iframe-dashboard.plg">
 <!ENTITY emhttp     "/usr/local/emhttp/plugins/&name;">
 <!ENTITY flash      "/boot/config/plugins/&name;">
 ]>
