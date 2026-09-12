@@ -21,8 +21,7 @@
 <FILE Name="&emhttp;/iframe-dashboard.page">
 <INLINE>
 <![CDATA[
-Menu="Dashboard:1"
-Title="Iframe"
+Menu="Dashboard:3"
 Icon="globe"
 ---
 <?PHP
