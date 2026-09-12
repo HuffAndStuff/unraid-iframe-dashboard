@@ -1,0 +1,8 @@
+<Plugin>
+  <!-- Delete this file if your repository does not ship plugins. -->
+  <Name>Unraid iFrame Dashboard</Name>
+  <PluginURL>https://raw.githubusercontent.com/HuffAndStuff/unraid-iframe-dashboard/refs/heads/main/iframe-dashboard.plg</PluginURL>
+  <Project>https://github.com/HuffAndStuff/unraid-iframe-dashboard</Project>
+  <Overview>Unraid plugin that adds a dashboard tile embedding an <iframe>, with the URL (and tile height) editable from Settings > Utilities > Iframe Dashboard, or via the gear icon on the tile itself.</Overview>
+  <Category>Tools:Utilities</Category>
+</Plugin>
